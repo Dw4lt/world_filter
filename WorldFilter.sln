@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldFilter", "WorldFilter\WorldFilter.csproj", "{7800E8DC-705A-45F3-9B79-62E11AE2ED72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldFilter.test", "WorldFilter.test\WorldFilter.test.csproj", "{B654EBAA-CAE7-4DB7-BE46-F5CC8ED0B828}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7800E8DC-705A-45F3-9B79-62E11AE2ED72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7800E8DC-705A-45F3-9B79-62E11AE2ED72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7800E8DC-705A-45F3-9B79-62E11AE2ED72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7800E8DC-705A-45F3-9B79-62E11AE2ED72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B654EBAA-CAE7-4DB7-BE46-F5CC8ED0B828}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B654EBAA-CAE7-4DB7-BE46-F5CC8ED0B828}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B654EBAA-CAE7-4DB7-BE46-F5CC8ED0B828}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B654EBAA-CAE7-4DB7-BE46-F5CC8ED0B828}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {57B77AE5-5A38-4F33-8E88-E1A0B0EAE340}
+	EndGlobalSection
+EndGlobal
