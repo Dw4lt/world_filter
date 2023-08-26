@@ -9,7 +9,10 @@
 
   <ItemGroup>
     <PackageReference Include="DotNetZip" Version="1.16.0" />
-    <PackageReference Include="fNbt" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\fNbt\fNbt\fNbt.csproj" />
   </ItemGroup>
 
 </Project>

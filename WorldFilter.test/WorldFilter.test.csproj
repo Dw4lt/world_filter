@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\fNbt\fNbt\fNbt.csproj" />
     <ProjectReference Include="..\WorldFilter\WorldFilter.csproj" />
   </ItemGroup>
 
