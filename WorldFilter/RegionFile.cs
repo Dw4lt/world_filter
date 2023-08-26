@@ -102,8 +102,7 @@ namespace WorldFilter {
                     var location = new Location();
                     foreach (var entry in LoadedChunkNbt.OrderBy(e => e.Key.Offset)) {
                         var old = Metadata.locations.GetLocation(entry.Key.Index);
-                        var new_loc = entry.Value.SerializeToStream(writer, Math.Max(old.UnscaledOffset, location.UnscaledOffset + (int) location.UnscaledLength));
-                        // var new_loc = entry.Value.SerializeToStream(writer, location.UnscaledOffset + (int) location.UnscaledLength);
+                        var new_loc = entry.Value.SerializeToStream(writer, location.UnscaledOffset + (int) location.UnscaledLength);
 
                         Metadata.locations.SetLocation(new_loc.Index, new_loc);
                         location = new_loc;
