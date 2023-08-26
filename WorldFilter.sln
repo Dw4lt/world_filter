@@ -5,7 +5,12 @@ VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldFilter", "WorldFilter\WorldFilter.csproj", "{7800E8DC-705A-45F3-9B79-62E11AE2ED72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldFilter.test", "WorldFilter.test\WorldFilter.test.csproj", "{B654EBAA-CAE7-4DB7-BE46-F5CC8ED0B828}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldFilter.test", "WorldFilter.test\WorldFilter.test.csproj", "{B654EBAA-CAE7-4DB7-BE46-F5CC8ED0B828}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{21133D46-1269-4CCE-8489-06BC456B9A13}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
