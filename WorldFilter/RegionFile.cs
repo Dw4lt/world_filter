@@ -1,10 +1,10 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Diagnostics;
 using fNbt;
 
 namespace WorldFilter {
-    public delegate bool CompoundModifier(NbtCompound compound);
-    public delegate bool InventoryModifier(NbtList compound);
+    public delegate bool ItemModifier(NbtCompound item);
+    public delegate bool InventoryModifier(NbtList inventory);
     public delegate bool ChunkModifier(LoadedChunk chunk);
 
     internal class Constants {
@@ -22,9 +22,12 @@ namespace WorldFilter {
         private RegionMetadata Metadata;
         private Dictionary<Location, ChunkLike> LoadedChunkNbt = new();
 
-        private RegionFile(BigEndianBinaryReader reader) {
+        private string LoadedFrom;
+
+        private RegionFile(BigEndianBinaryReader reader, string loadedFrom) {
             r = reader;
             Metadata = new RegionMetadata(reader);
+            LoadedFrom = loadedFrom;
         }
 
         public static RegionFile Open(FileInfo file) => Open(file.FullName);
@@ -32,7 +35,7 @@ namespace WorldFilter {
         public static RegionFile Open(string path) {
             var stream = StreamCreator.Create(path);
             var stream_reader = new BigEndianBinaryReader(stream);
-            var region = new RegionFile(stream_reader);
+            var region = new RegionFile(stream_reader, path);
 
             foreach (var x in region.Metadata.locations) {
                 var timestamp = region.Metadata.TimestampTable[x.Value.Index];
@@ -55,9 +58,9 @@ namespace WorldFilter {
             string[] inventory_keywords = { "Items", "Inventory" };
             foreach (LoadedChunk chunk in GetAllChunks()) {
                 if (chunk.Data.RootTag.TryGet("block_entities", out NbtList block_entities)) {
-                    foreach(NbtCompound entity in block_entities) {
+                    foreach (NbtCompound entity in block_entities) {
                         if (entity.TryGet("Items", out NbtList inventory)) {
-                            foreach(var foo in funcs) {
+                            foreach (var foo in funcs) {
                                 chunk.Dirty |= foo(inventory);
                             }
                         }
@@ -71,7 +74,7 @@ namespace WorldFilter {
             if (location.UnscaledOffset == 0)
                 throw new ArgumentOutOfRangeException("Chunk doesn't exist.", nameof(location.UnscaledOffset));
 
-            var found = LoadedChunkNbt.TryGetValue(location, out ChunkLike chunk);
+            var found = LoadedChunkNbt.TryGetValue(location, out ChunkLike? chunk);
             if (found && chunk is LoadedChunk fullyLoadedChunk) {
                 return fullyLoadedChunk;
             } else if (found && chunk is HalfLoadedChunk halfLoadedChunk) {
@@ -83,8 +86,8 @@ namespace WorldFilter {
         }
 
         public bool SaveIfNecessary(string path) {
-            bool modified = LoadedChunkNbt.Any(x => x.Value.Dirty);
-            if (modified || true) {
+            if (path != LoadedFrom || LoadedChunkNbt.Any(x => x.Value.Dirty)) {
+                Console.WriteLine($"Saving region to '{path}'");
                 var file = File.Open(path, FileMode.Create);
                 using (var writer = new BigEndianBinaryWriter(file, System.Text.Encoding.UTF8, false)) {
 
@@ -104,8 +107,9 @@ namespace WorldFilter {
                     Metadata.ToBytes(writer);
                     writer.Flush();
                 }
+                return true;
             }
-            return modified;
+            return false;
         }
 
         public IEnumerable<LoadedChunk> GetAllChunks() {
@@ -356,7 +360,7 @@ namespace WorldFilter {
             var compression = (CompressionType) reader.ReadByte();
 
             file = new NbtFile();
-            var loaded_length = (int) file.LoadFromBuffer(chunk.UnparsedData, 5, declared_length, NbtCompression.AutoDetect);
+            var loaded_length = (int) file.LoadFromBuffer(chunk.UnparsedData, 5, declared_length - 1, NbtCompression.AutoDetect);
         }
 
         private static NbtFile? LoadChunkFromBuffer(Location location, BigEndianBinaryReader reader) {

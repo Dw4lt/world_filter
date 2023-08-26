@@ -17,7 +17,6 @@ namespace WorldFilter.test {
             region.SaveIfNecessary(out_path);
 
             AssertEqualFiles(f.FullName, out_path);
-            ;
         }
 
         [TestMethod]
@@ -34,7 +33,6 @@ namespace WorldFilter.test {
             region.SaveIfNecessary(out_path);
 
             AssertEqualFiles(out_file.FullName, out_path);
-            ;
         }
 
         [TestMethod]
@@ -55,7 +53,6 @@ namespace WorldFilter.test {
 
             FileInfo out_file = new(@"resources/TestInventoryPurge/out.mca");
             AssertEqualFiles(out_file.FullName, out_path);
-            ;
         }
 
         private void AssertEqualFiles(string a, string b) {
