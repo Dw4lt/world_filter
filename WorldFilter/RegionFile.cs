@@ -14,6 +14,13 @@ namespace WorldFilter {
         public static readonly byte[] SINGLE_PADDING = { 0, 0, 0, 0 };
     }
 
+    /// <summary>
+    /// Chunk compression types.
+    /// </summary>
+    public enum CompressionType {
+        Gzip = 1,
+        Zlib = 2
+    }
 
     public class RegionFile : IDisposable {
 
