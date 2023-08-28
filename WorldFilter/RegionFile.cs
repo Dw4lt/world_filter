@@ -14,20 +14,18 @@ namespace WorldFilter {
         private RegionMetadata Metadata;
         private Dictionary<Location, ChunkLike> LoadedChunkNbt = new();
 
-        private string LoadedFrom;
+        public readonly FileInfo LoadedFrom;
 
-        private RegionFile(BigEndianBinaryReader reader, string loadedFrom) {
+        private RegionFile(BigEndianBinaryReader reader, FileInfo loadedFrom) {
             r = reader;
             Metadata = new RegionMetadata(reader);
             LoadedFrom = loadedFrom;
         }
 
-        public static RegionFile Open(FileInfo file) => Open(file.FullName);
-
-        public static RegionFile Open(string path) {
-            var stream = StreamCreator.Create(path);
+        public static RegionFile Open(FileInfo file) {
+            var stream = StreamCreator.Create(file.FullName);
             var stream_reader = new BigEndianBinaryReader(stream);
-            var region = new RegionFile(stream_reader, path);
+            var region = new RegionFile(stream_reader, file);
 
             foreach (var x in region.Metadata.locations) {
                 var timestamp = region.Metadata.TimestampTable[x.Value.Index];
@@ -77,10 +75,15 @@ namespace WorldFilter {
             throw new Exception("Unsupported ChunkLike derivative.");
         }
 
-        public bool SaveIfNecessary(string path) {
+        public bool SaveIfNecessary(FileInfo path) {
             if (path != LoadedFrom || LoadedChunkNbt.Any(x => x.Value.Dirty)) {
                 Console.WriteLine($"Saving region to '{path}'");
-                var file = File.Open(path, FileMode.Create);
+                // Ensure path exists
+                if (path.Directory != null) {
+                    Directory.CreateDirectory(path.Directory.FullName);
+                }
+
+                var file = File.Open(path.FullName, FileMode.Create);
                 using (var writer = new BigEndianBinaryWriter(file, System.Text.Encoding.UTF8, false)) {
 
                     // Save all dirty chunks to the stream

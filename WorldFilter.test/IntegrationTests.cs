@@ -14,7 +14,7 @@ namespace WorldFilter.test {
             region.ApplyToChunks(new List<ChunkModifier> { x => false });
 
             var out_path = Path.GetTempFileName();
-            region.SaveIfNecessary(out_path);
+            region.SaveIfNecessary(new FileInfo(out_path));
 
             AssertEqualFiles(f.FullName, out_path);
         }
@@ -30,7 +30,7 @@ namespace WorldFilter.test {
             region.ApplyToChunks(new List<ChunkModifier> { x => true });
 
             var out_path = Path.GetTempFileName();
-            region.SaveIfNecessary(out_path);
+            region.SaveIfNecessary(new FileInfo(out_path));
 
             AssertEqualFiles(out_file.FullName, out_path);
         }
@@ -49,7 +49,7 @@ namespace WorldFilter.test {
             } });
 
             var out_path = Path.GetTempFileName();
-            region.SaveIfNecessary(out_path);
+            region.SaveIfNecessary(new FileInfo(out_path));
 
             FileInfo out_file = new(@"resources/TestInventoryPurge/out.mca");
             AssertEqualFiles(out_file.FullName, out_path);
