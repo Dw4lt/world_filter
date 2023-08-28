@@ -9,7 +9,7 @@ namespace WorldFilter.test {
         [DeploymentItem(@"resources/TestUnchanging/in.mca")]
         public void TestUnchanging() {
             FileInfo f = new(@"resources/TestUnchanging/in.mca");
-            var region = RegionFile.Open(f);
+            var region = new RegionFile(f);
 
             region.ApplyToChunks(new List<ChunkModifier> { x => false });
 
@@ -25,7 +25,7 @@ namespace WorldFilter.test {
         public void TestUnchangingWithFullSerialization() {
             FileInfo in_file = new(@"resources/TestUnchangingWithFullSerialization/in.mca");
             FileInfo out_file = new(@"resources/TestUnchangingWithFullSerialization/out.mca");
-            var region = RegionFile.Open(in_file);
+            var region = new RegionFile(in_file);
 
             region.ApplyToChunks(new List<ChunkModifier> { x => true });
 
@@ -40,7 +40,7 @@ namespace WorldFilter.test {
         [DeploymentItem(@"resources/TestInventoryPurge/out.mca")]
         public void TestInventoryPurge() {
             FileInfo in_file = new(@"resources/TestInventoryPurge/in.mca");
-            var region = RegionFile.Open(in_file);
+            var region = new RegionFile(in_file);
 
             region.ApplyToInventoriesOfChunks(new List<InventoryModifier> { x => {
                 var ret = x.Count;

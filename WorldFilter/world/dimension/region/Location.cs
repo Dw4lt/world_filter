@@ -35,7 +35,7 @@ namespace WorldFilter {
                 return UnpaddedScaledLength;
             }
             set {
-                UnpaddedScaledLength = (int) value;
+                UnpaddedScaledLength = value;
             }
         }
 

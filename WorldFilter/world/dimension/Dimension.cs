@@ -12,7 +12,7 @@
                 foreach (var file in region_dir.GetFiles("r.*.mca", new EnumerationOptions())) {
                     RegionFile? region = null;
                     try {
-                        region = RegionFile.Open(file);
+                        region = new RegionFile(file);
                     } catch (Exception e) {
                         Console.WriteLine(e.ToString());
                         Console.Write(e.StackTrace);

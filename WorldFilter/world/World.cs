@@ -1,7 +1,5 @@
 ﻿
 using fNbt;
-using System.ComponentModel.Design;
-using System.Diagnostics.CodeAnalysis;
 
 namespace WorldFilter {
     public class World {
@@ -32,7 +30,7 @@ namespace WorldFilter {
                         yield return new Dimension(subdir);
                         break;
                     case "dimensions":
-                        foreach(var group in subdir.GetDirectories()) {
+                        foreach (var group in subdir.GetDirectories()) {
                             foreach (var custom_dim in group.GetDirectories()) {
                                 yield return new Dimension(custom_dim);
                             }
@@ -40,6 +38,25 @@ namespace WorldFilter {
                         break;
                     default:
                         break;
+                }
+            }
+        }
+
+        public IEnumerable<PlayerFile> GetPlayers() {
+            foreach (var subdir in WorldDir.GetDirectories()) {
+                if (subdir.Name == "playerdata") {
+                    foreach (var file in subdir.GetFiles("*.dat")) {
+                        PlayerFile? player = null;
+                        try {
+                            player = new PlayerFile(file);
+                        } catch (Exception e) {
+                            Console.WriteLine(e);
+                            Console.Write(e.StackTrace);
+                        }
+                        if (player != null) {
+                            yield return player;
+                        }
+                    }
                 }
             }
         }

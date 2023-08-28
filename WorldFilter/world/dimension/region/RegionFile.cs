@@ -1,39 +1,30 @@
-﻿using System.Collections;
-using System.Diagnostics;
-using fNbt;
+﻿using fNbt;
 
 namespace WorldFilter {
     public delegate bool ItemModifier(NbtCompound item);
     public delegate bool InventoryModifier(NbtList inventory);
     public delegate bool ChunkModifier(LoadedChunk chunk);
 
-    public class RegionFile : IDisposable {
+    public class RegionFile : SavableFile, IDisposable {
 
         private BigEndianBinaryReader r;
 
         private RegionMetadata Metadata;
         private Dictionary<Location, ChunkLike> LoadedChunkNbt = new();
 
-        public readonly FileInfo LoadedFrom;
+        protected override bool Dirty => LoadedChunkNbt.Any(x => x.Value.Dirty);
 
-        private RegionFile(BigEndianBinaryReader reader, FileInfo loadedFrom) {
-            r = reader;
-            Metadata = new RegionMetadata(reader);
-            LoadedFrom = loadedFrom;
-        }
-
-        public static RegionFile Open(FileInfo file) {
+        public RegionFile(FileInfo file) : base(file) {
             var stream = StreamCreator.Create(file.FullName);
-            var stream_reader = new BigEndianBinaryReader(stream);
-            var region = new RegionFile(stream_reader, file);
+            r = new BigEndianBinaryReader(stream);
 
-            foreach (var x in region.Metadata.locations) {
-                var timestamp = region.Metadata.TimestampTable[x.Value.Index];
-                var chunk = HalfLoadedChunk.PartiallyLoadChunk(x.Value, timestamp, stream_reader);
-                region.LoadedChunkNbt.Add(x.Value, chunk);
+            Metadata = new RegionMetadata(r);
+
+            foreach (var x in Metadata.locations) {
+                var timestamp = Metadata.TimestampTable[x.Value.Index];
+                var chunk = HalfLoadedChunk.PartiallyLoadChunk(x.Value, timestamp, r);
+                LoadedChunkNbt.Add(x.Value, chunk);
             }
-
-            return region;
         }
 
         public void ApplyToChunks(IEnumerable<ChunkModifier> funcs) {
@@ -75,13 +66,11 @@ namespace WorldFilter {
             throw new Exception("Unsupported ChunkLike derivative.");
         }
 
-        public bool SaveIfNecessary(FileInfo path) {
-            if (path != LoadedFrom || LoadedChunkNbt.Any(x => x.Value.Dirty)) {
+        public override bool SaveIfNecessary(FileInfo path) {
+            if (path != LoadedFrom || Dirty) {
                 Console.WriteLine($"Saving region to '{path}'");
-                // Ensure path exists
-                if (path.Directory != null) {
-                    Directory.CreateDirectory(path.Directory.FullName);
-                }
+
+                EnsureDirectoryExists(path);
 
                 var file = File.Open(path.FullName, FileMode.Create);
                 using (var writer = new BigEndianBinaryWriter(file, System.Text.Encoding.UTF8, false)) {
