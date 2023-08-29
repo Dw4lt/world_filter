@@ -10,8 +10,8 @@ bool RemoveEnchantments(NbtList inventory) {
         changed |= item.Remove("Enchantments");
 
         // Remember to process nested items as well!
-        if ((item["tag"]?["BlockEntityTag"]?["Items"] ?? item["tag"]?["Items"]) is NbtList nested_item) {
-            changed |= RemoveEnchantments(nested_item);
+        if (item.GetNestedItems(out NbtList? nested_inventory)) {
+            changed |= RemoveEnchantments(nested_inventory);
         }
     }
     return changed;
